@@ -10,6 +10,11 @@ import {
 } from "../utils";
 import validateFormData from "../validate";
 
+const ERROR_LIST_POSITIONS = {
+  TOP: "top",
+  BOTTOM: "bottom",
+};
+
 export default class Form extends Component {
   static defaultProps = {
     uiSchema: {},
@@ -18,6 +23,7 @@ export default class Form extends Component {
     safeRenderCompletion: false,
     noHtml5Validate: false,
     ErrorList: DefaultErrorList,
+    errorListPosition: ERROR_LIST_POSITIONS.TOP,
   };
 
   constructor(props) {
@@ -81,6 +87,20 @@ export default class Form extends Component {
 
     if (status !== "editing" && errors.length && showErrorList != false) {
       return <ErrorList errors={errors} />;
+    }
+    return null;
+  }
+
+  renderTopErrors() {
+    if (this.props.errorListPosition === ERROR_LIST_POSITIONS.TOP) {
+      return this.renderErrors();
+    }
+    return null;
+  }
+
+  renderBottomErrors() {
+    if (this.props.errorListPosition === ERROR_LIST_POSITIONS.BOTTOM) {
+      return this.renderErrors();
     }
     return null;
   }
@@ -177,7 +197,7 @@ export default class Form extends Component {
         acceptCharset={acceptcharset}
         noValidate={noHtml5Validate}
         onSubmit={this.onSubmit}>
-        {this.renderErrors()}
+        {this.renderTopErrors()}
         <_SchemaField
           schema={schema}
           uiSchema={uiSchema}
@@ -189,6 +209,7 @@ export default class Form extends Component {
           registry={registry}
           safeRenderCompletion={safeRenderCompletion}
         />
+        {this.renderBottomErrors()}
         {children
           ? children
           : <p>
@@ -211,6 +232,10 @@ if (process.env.NODE_ENV !== "production") {
     ArrayFieldTemplate: PropTypes.func,
     FieldTemplate: PropTypes.func,
     ErrorList: PropTypes.func,
+    errorListPosition: PropTypes.oneOf(
+      ERROR_LIST_POSITIONS.TOP,
+      ERROR_LIST_POSITIONS.BOTTOM
+    ),
     onChange: PropTypes.func,
     onError: PropTypes.func,
     showErrorList: PropTypes.bool,
