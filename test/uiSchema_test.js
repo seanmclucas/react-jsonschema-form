@@ -89,6 +89,7 @@ describe("uiSchema", () => {
             funcNone: { type: "string" },
             stringAll: { type: "string" },
             stringNone: { type: "string" },
+            stringTel: { type: "string" },
           },
         };
 
@@ -126,6 +127,11 @@ describe("uiSchema", () => {
           stringNone: {
             "ui:widget": "widget",
           },
+          stringTel: {
+            "ui:options": {
+              inputType: "tel",
+            },
+          },
         };
       });
 
@@ -135,9 +141,8 @@ describe("uiSchema", () => {
           uiSchema: { "ui:widget": { component: "widget" } },
           widgets,
         });
-        expect(
-          console.warn.calledWithMatch(/ui:widget object is deprecated/)
-        ).to.be.true;
+        expect(console.warn.calledWithMatch(/ui:widget object is deprecated/))
+          .to.be.true;
       });
 
       it("should cache MergedWidget instance", () => {
@@ -195,6 +200,12 @@ describe("uiSchema", () => {
         expect(widget.style.color).to.equal("green");
         expect(widget.style.margin).to.equal("");
         expect(widget.style.padding).to.equal("");
+      });
+
+      it("should ui:option inputType for html5 input types", () => {
+        const { node } = createFormComponent({ schema, uiSchema, widgets });
+        const widget = node.querySelector("input[type='tel']");
+        expect(widget).to.not.be.null;
       });
     });
 
@@ -310,9 +321,11 @@ describe("uiSchema", () => {
         const { enumOptions, className } = options;
         return (
           <select className={className}>
-            {enumOptions.map(({ label, value }, i) => (
-              <option key={i}>{value}</option>
-            ))}
+            {enumOptions.map(({ label, value }, i) =>
+              <option key={i}>
+                {value}
+              </option>
+            )}
           </select>
         );
       };
@@ -341,6 +354,28 @@ describe("uiSchema", () => {
       const { node } = createFormComponent({ schema, uiSchema });
 
       expect(node.querySelector("p.help-block").textContent).eql("plop");
+    });
+  });
+
+  describe("ui:title", () => {
+    it("should render the provided title text", () => {
+      const schema = { type: "string" };
+      const uiSchema = { "ui:title": "plop" };
+
+      const { node } = createFormComponent({ schema, uiSchema });
+
+      expect(node.querySelector("label.control-label").textContent).eql("plop");
+    });
+  });
+
+  describe("ui:description", () => {
+    it("should render the provided description text", () => {
+      const schema = { type: "string" };
+      const uiSchema = { "ui:description": "plop" };
+
+      const { node } = createFormComponent({ schema, uiSchema });
+
+      expect(node.querySelector("p.field-description").textContent).eql("plop");
     });
   });
 
@@ -1861,7 +1896,8 @@ describe("uiSchema", () => {
         });
 
         const readonly = [].map.call(node.querySelectorAll("select"), node =>
-          node.hasAttribute("disabled"));
+          node.hasAttribute("disabled")
+        );
         expect(readonly).eql([true, true, true]);
       });
 
@@ -1872,7 +1908,8 @@ describe("uiSchema", () => {
         });
 
         const readonly = [].map.call(node.querySelectorAll("select"), node =>
-          node.hasAttribute("disabled"));
+          node.hasAttribute("disabled")
+        );
         expect(readonly).eql([true, true, true, true, true, true]);
       });
     });

@@ -100,6 +100,22 @@ describe("StringField", () => {
       expect(onBlur.calledWith(input.id, "yo")).to.be.true;
     });
 
+    it("should handle a focus event", () => {
+      const onFocus = sandbox.spy();
+      const { node } = createFormComponent({
+        schema: {
+          type: "string",
+        },
+        onFocus,
+      });
+      const input = node.querySelector("input");
+      Simulate.focus(input, {
+        target: { value: "yo" },
+      });
+
+      expect(onFocus.calledWith(input.id, "yo")).to.be.true;
+    });
+
     it("should handle an empty string change event", () => {
       const { comp, node } = createFormComponent({
         schema: { type: "string" },
@@ -1505,7 +1521,8 @@ describe("StringField", () => {
       return new Promise(setImmediate).then(() =>
         expect(comp.state.formData).eql(
           "data:text/plain;name=file1.txt;base64,x="
-        ));
+        )
+      );
     });
 
     it("should render the widget with the expected id", () => {

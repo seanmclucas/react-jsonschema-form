@@ -1,8 +1,10 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 import {
   getWidget,
   getUiOptions,
+  isSelect,
   optionsList,
   getDefaultRegistry,
 } from "../../utils";
@@ -18,13 +20,14 @@ function StringField(props) {
     disabled,
     readonly,
     autofocus,
-    registry,
     onChange,
     onBlur,
+    onFocus,
+    registry = getDefaultRegistry(),
   } = props;
   const { title, format } = schema;
   const { widgets, formContext } = registry;
-  const enumOptions = Array.isArray(schema.enum) && optionsList(schema);
+  const enumOptions = isSelect(schema) && optionsList(schema);
   const defaultWidget = format || (enumOptions ? "select" : "text");
   const { widget = defaultWidget, placeholder = "", ...options } = getUiOptions(
     uiSchema
@@ -40,6 +43,7 @@ function StringField(props) {
       value={formData}
       onChange={onChange}
       onBlur={onBlur}
+      onFocus={onFocus}
       required={required}
       disabled={disabled}
       readonly={readonly}
@@ -57,11 +61,9 @@ if (process.env.NODE_ENV !== "production") {
     uiSchema: PropTypes.object.isRequired,
     idSchema: PropTypes.object,
     onChange: PropTypes.func.isRequired,
-    onBlur: PropTypes.func.isRequired,
-    formData: PropTypes.oneOfType([
-      React.PropTypes.string,
-      React.PropTypes.number,
-    ]),
+    onBlur: PropTypes.func,
+    onFocus: PropTypes.func,
+    formData: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     registry: PropTypes.shape({
       widgets: PropTypes.objectOf(
         PropTypes.oneOfType([PropTypes.func, PropTypes.object])
@@ -80,7 +82,6 @@ if (process.env.NODE_ENV !== "production") {
 
 StringField.defaultProps = {
   uiSchema: {},
-  registry: getDefaultRegistry(),
   disabled: false,
   readonly: false,
   autofocus: false,

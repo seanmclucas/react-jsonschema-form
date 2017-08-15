@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 
 function RadioWidget(props) {
   const {
@@ -32,7 +33,9 @@ function RadioWidget(props) {
               autoFocus={autofocus && i === 0}
               onChange={_ => onChange(option.value)}
             />
-            <span>{option.label}</span>
+            <span>
+              {option.label}
+            </span>
           </span>
         );
 

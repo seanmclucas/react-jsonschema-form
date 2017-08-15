@@ -52,7 +52,10 @@ describe("ObjectField", () => {
     });
 
     it("should render a customized title", () => {
-      const CustomTitleField = ({ title }) => <div id="custom">{title}</div>;
+      const CustomTitleField = ({ title }) =>
+        <div id="custom">
+          {title}
+        </div>;
 
       const { node } = createFormComponent({
         schema,
@@ -66,9 +69,10 @@ describe("ObjectField", () => {
     });
 
     it("should render a customized description", () => {
-      const CustomDescriptionField = ({ description }) => (
-        <div id="custom">{description}</div>
-      );
+      const CustomDescriptionField = ({ description }) =>
+        <div id="custom">
+          {description}
+        </div>;
 
       const { node } = createFormComponent({
         schema,
@@ -155,6 +159,18 @@ describe("ObjectField", () => {
       });
 
       expect(onBlur.calledWith(input.id, "changed")).to.be.true;
+    });
+
+    it("should handle object fields with focus events", () => {
+      const onFocus = sandbox.spy();
+      const { node } = createFormComponent({ schema, onFocus });
+
+      const input = node.querySelector("input[type=text]");
+      Simulate.focus(input, {
+        target: { value: "changed" },
+      });
+
+      expect(onFocus.calledWith(input.id, "changed")).to.be.true;
     });
 
     it("should render the widget with the expected id", () => {

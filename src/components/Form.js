@@ -1,4 +1,5 @@
-import React, { Component, PropTypes } from "react";
+import React, { Component } from "react";
+import PropTypes from "prop-types";
 
 import { default as DefaultErrorList } from "./ErrorList";
 import {
@@ -76,18 +77,26 @@ export default class Form extends Component {
   }
 
   renderErrors() {
-    const { status, errors } = this.state;
-    const { ErrorList, showErrorList } = this.props;
+    const { status, errors, errorSchema, schema, uiSchema } = this.state;
+    const { ErrorList, showErrorList, formContext } = this.props;
 
     if (status !== "editing" && errors.length && showErrorList != false) {
-      return <ErrorList errors={errors} />;
+      return (
+        <ErrorList
+          errors={errors}
+          errorSchema={errorSchema}
+          schema={schema}
+          uiSchema={uiSchema}
+          formContext={formContext}
+        />
+      );
     }
     return null;
   }
 
   onChange = (formData, options = { validate: false }) => {
-    const mustValidate = !this.props.noValidate &&
-      (this.props.liveValidate || options.validate);
+    const mustValidate =
+      !this.props.noValidate && (this.props.liveValidate || options.validate);
     let state = { status: "editing", formData };
     if (mustValidate) {
       const { errors, errorSchema } = this.validate(formData);
@@ -103,6 +112,12 @@ export default class Form extends Component {
   onBlur = (...args) => {
     if (this.props.onBlur) {
       this.props.onBlur(...args);
+    }
+  };
+
+  onFocus = (...args) => {
+    if (this.props.onFocus) {
+      this.props.onFocus(...args);
     }
   };
 
@@ -186,13 +201,16 @@ export default class Form extends Component {
           formData={formData}
           onChange={this.onChange}
           onBlur={this.onBlur}
+          onFocus={this.onFocus}
           registry={registry}
           safeRenderCompletion={safeRenderCompletion}
         />
         {children
           ? children
           : <p>
-              <button type="submit" className="btn btn-info">Submit</button>
+              <button type="submit" className="btn btn-info">
+                Submit
+              </button>
             </p>}
       </form>
     );

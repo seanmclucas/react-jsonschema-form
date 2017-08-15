@@ -26,6 +26,11 @@ module.exports = {
         title: "Password",
         minLength: 3,
       },
+      telephone: {
+        type: "string",
+        title: "Telephone",
+        minLength: 10,
+      },
     },
   },
   uiSchema: {
@@ -35,6 +40,8 @@ module.exports = {
     },
     age: {
       "ui:widget": "updown",
+      "ui:title": "Age of person",
+      "ui:description": "(earthian year)",
     },
     bio: {
       "ui:widget": "textarea",
@@ -45,6 +52,11 @@ module.exports = {
     },
     date: {
       "ui:widget": "alt-datetime",
+    },
+    telephone: {
+      "ui:options": {
+        inputType: "tel",
+      },
     },
   },
   formData: {

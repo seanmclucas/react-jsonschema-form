@@ -1,4 +1,5 @@
-import React, { PropTypes } from "react";
+import React from "react";
+import PropTypes from "prop-types";
 import DescriptionField from "../fields/DescriptionField.js";
 
 function CheckboxWidget(props) {
@@ -27,7 +28,9 @@ function CheckboxWidget(props) {
           autoFocus={autofocus}
           onChange={event => onChange(event.target.checked)}
         />
-        <span>{label}</span>
+        <span>
+          {label}
+        </span>
       </label>
     </div>
   );
